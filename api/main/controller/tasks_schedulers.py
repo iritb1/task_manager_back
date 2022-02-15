@@ -135,23 +135,35 @@ class Utils:
     def calc_next_dates(scheduler, count=1):
         scheduler = copy.deepcopy(scheduler)
         if scheduler['start_date'] and isinstance(scheduler['start_date'], str):
-            scheduler['start_date'] = datetime.date.fromisoformat(
-                scheduler['start_date'])
+            scheduler['start_date'] = datetime.date.fromisoformat(scheduler['start_date'])
+
         if scheduler['end_date'] and isinstance(scheduler['end_date'], str):
-            scheduler['end_date'] = datetime.date.fromisoformat(
-                scheduler['end_date'])
+            scheduler['end_date'] = datetime.date.fromisoformat(scheduler['end_date'])
+
         if 'next_date' in scheduler:
             if scheduler['next_date'] and isinstance(scheduler['next_date'], str):
-                scheduler['next_date'] = datetime.date.fromisoformat(
-                    scheduler['next_date'])
-            scheduler['start_date'] = scheduler['next_date']
+                scheduler['next_date'] = datetime.date.fromisoformat(scheduler['next_date'])
+
+            # scheduler['start_date'] = scheduler['next_date']
+        
+        # print("---------------------next day------------------")
+        # print(scheduler['start_date'])
         if scheduler['freq'] == MONTHLY:
-            next_dates = list(rrule(scheduler['freq'], interval=scheduler['interval_value'],
-                                    dtstart=scheduler['start_date'], until=scheduler['end_date'],  count=count,  bymonthday=scheduler['specific_value']))
+            # print("-------------------------month------------------")
+            # print(scheduler['freq'], scheduler['interval_value'], scheduler['start_date'], scheduler['end_date'], scheduler['specific_value'])
+            next_dates = list(rrule(scheduler['freq'], 
+                                    interval=scheduler['interval_value'],
+                                    dtstart=scheduler['start_date'], 
+                                    until=scheduler['end_date'],  
+                                    count=count,  
+                                    bymonthday=scheduler['specific_value']))
+
         elif scheduler['freq'] == WEEKLY:
+            # print("----------------------week-----------------")
             next_dates = list(rrule(scheduler['freq'], interval=scheduler['interval_value'],
                                     dtstart=scheduler['start_date'], until=scheduler['end_date'], count=count, byweekday=scheduler['specific_value']))
         else:
+            # print("--------------------------day-------------------")
             next_dates = list(rrule(
                 scheduler['freq'], interval=scheduler['interval_value'], dtstart=scheduler['start_date'], until=scheduler['end_date'], count=count))
         return next_dates
